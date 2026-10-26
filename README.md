@@ -1,55 +1,87 @@
-# Gestión de Liga de Básquetbol
+# Liga Pro — Gestión de Liga de Básquetbol 🏀
 
-Aplicación web educativa para administrar equipos, jugadores y partidos de una liga de básquetbol.
+Versión renovada del proyecto original con **Laravel 12, PHP, HTML, CSS y JavaScript**. Funciona **sin MySQL ni otra base de datos**: guarda la información en `storage/app/private/liga.json` en el equipo que ejecuta Laravel.
 
-## Tecnologías
-- HTML5
-- CSS3
-- JavaScript
-- Git y GitHub para el control de versiones y la publicación del código
+## Funciones nuevas
 
-**No utiliza Laravel ni MySQL.** Los datos se guardan en el almacenamiento local (`localStorage`) del navegador en el equipo donde se usa la aplicación.
+- Panel deportivo moderno y adaptable a celulares.
+- Registrar, buscar, editar y eliminar **equipos**.
+- Registrar, buscar, editar y eliminar **jugadores**. Control de dorsales duplicados por equipo.
+- Programar, filtrar, editar y eliminar **partidos**.
+- Registrar y modificar marcadores; volver un encuentro a «Programado».
+- **Tabla de posiciones automática**: partidos jugados, ganados, perdidos, puntos a favor/en contra y diferencia.
+- Próximos encuentros, líderes del torneo y contadores actualizados.
+- Descargar y restaurar **respaldo JSON**.
+- Validación de formularios en Laravel y protección CSRF.
 
-## Cómo abrir el proyecto
-1. Descarga y descomprime la carpeta del proyecto.
-2. Abre la carpeta `liga_basket_github` desde Visual Studio Code.
-3. Abre `index.html` en el navegador. Puedes usar la extensión Live Server de VS Code, o abrir el archivo directamente.
-4. Registra al menos dos equipos para poder programar partidos.
+## Pasos para abrirlo en Windows, VS Code y XAMPP
 
-## Funciones incluidas
-- Panel resumen con contadores.
-- Crear y eliminar equipos.
-- Crear y eliminar jugadores, asignándolos a un equipo.
-- Programar partidos con fecha y equipos local/visitante.
-- Registrar y editar marcadores de partidos.
-- Guardado local automático en el navegador.
+**Necesitas:** XAMPP con **PHP 8.2 o superior**, [Composer](https://getcomposer.org/download/) y Git. No hace falta iniciar MySQL.
 
-## Git: primeros comandos
-Abre la terminal de VS Code en esta carpeta y ejecuta:
+1. Descomprime `liga_basket_github` y abre esa carpeta en Visual Studio Code.
+2. En XAMPP, inicia **Apache**. Deja MySQL apagado.
+3. Abre **Terminal → Nueva terminal** en VS Code dentro de la carpeta donde está `composer.json`.
+4. Ejecuta **uno por uno**:
+
+   ```powershell
+   composer install
+   copy .env.example .env
+   php artisan key:generate
+   php artisan serve
+   ```
+
+   Si tu PC no reconoce el comando `php`, utiliza la ruta de XAMPP para los dos últimos comandos:
+
+   ```powershell
+   C:\xampp\php\php.exe artisan key:generate
+   C:\xampp\php\php.exe artisan serve
+   ```
+
+5. En Chrome entra a **http://127.0.0.1:8000**. Mantén la terminal abierta durante el uso.
+
+> **Nota:** `composer install` descarga Laravel la primera vez; el ZIP no incluye la carpeta `vendor`. No uses `npm install`, no crees migraciones y no configures MySQL.
+
+### Acceso desde Apache / XAMPP
+
+Si copias la carpeta a `C:\xampp\htdocs\liga_basket_github`, también puedes entrar a `http://localhost/liga_basket_github/public/` después de instalar dependencias y generar la clave. En un hosting real el sitio debe apuntar directamente al directorio **public** y nunca exponerse la carpeta del proyecto completa.
+
+## Git y GitHub
+
+El proyecto conserva el historial Git del ZIP original. En la terminal de VS Code:
 
 ```bash
-git init
+git status
 git add .
-git commit -m "Primer commit: liga de basquetbol"
+git commit -m "Renovar liga de basquetbol con Laravel y JSON"
 ```
 
-Si Git solicita identificarte, configura tu nombre y correo:
+Para subirlo a un repositorio nuevo de GitHub:
 
 ```bash
-git config --global user.name "Tu nombre"
-git config --global user.email "tu-correo@example.com"
-```
-
-## Subir a GitHub
-1. Crea un repositorio vacío en https://github.com/new con el nombre `gestion-liga-basquetbol`.
-2. No marques la opción de crear README si ya tienes este archivo.
-3. Copia la URL HTTPS del repositorio y, en la terminal de esta carpeta, ejecuta (reemplaza la URL por la tuya):
-
-```bash
-git branch -M main
+git remote -v
 git remote add origin https://github.com/TU-USUARIO/gestion-liga-basquetbol.git
+git branch -M main
 git push -u origin main
 ```
 
-## Limitaciones
-Esta versión es una demostración local: los datos no se sincronizan entre navegadores o computadoras, no hay inicio de sesión real ni base de datos compartida. Para una aplicación multiusuario se necesitaría un backend y almacenamiento centralizado.
+Si `git remote -v` ya muestra `origin`, omite `git remote add origin`. Si debes corregirlo, usa `git remote set-url origin URL-REAL-DE-TU-REPOSITORIO`. **El ZIP no está publicado en tu GitHub**: lo subirás desde tu cuenta.
+
+## Datos y seguridad
+
+- Los registros quedan en `storage/app/private/liga.json`, creado automáticamente.
+- Ese archivo está excluido de Git para no divulgar datos al subir el repositorio.
+- Laravel bloquea el JSON al leer/escribir para evitar operaciones simultáneas incompatibles.
+- Antes de borrar equipos o restaurar datos, descarga un respaldo en la sección **Respaldo**.
+- Este proyecto académico **no tiene autenticación de administradores**. Úsalo localmente o en una red confiable; no lo publiques en Internet sin añadir usuarios, permisos y controles de acceso.
+
+## Organización
+
+```text
+app/Http/Controllers/LigaController.php   API y validación
+app/Services/LigaStore.php               Guardado JSON
+routes/web.php                           Rutas de Laravel
+resources/views/liga.blade.php           Página principal
+public/css/app.css                       Diseño
+public/js/app.js                         Funciones y clasificación
+storage/app/private/liga.json            Datos (autogenerados)
+```
